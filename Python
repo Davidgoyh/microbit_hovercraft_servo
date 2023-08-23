@@ -1,0 +1,70 @@
+##import as python in makecode python page
+
+def on_button_pressed_a():
+    radio.send_string("L")
+input.on_button_pressed(Button.A, on_button_pressed_a)
+
+def on_button_pressed_ab():
+    radio.send_string("P")
+input.on_button_pressed(Button.AB, on_button_pressed_ab)
+
+def on_received_string(receivedString):
+    global power, Hover, servo
+    if receivedString == "P":
+        power += 1
+    if receivedString == "H":
+        Hover += 1
+    if power > 1:
+        power = 0
+    if Hover > 1:
+        Hover = 0
+    if receivedString == "L":
+        servo += -1
+    if receivedString == "R":
+        servo += 1
+radio.on_received_string(on_received_string)
+
+def on_button_pressed_b():
+    radio.send_string("R")
+input.on_button_pressed(Button.B, on_button_pressed_b)
+
+def on_logo_pressed():
+    radio.send_string("H")
+input.on_logo_event(TouchButtonEvent.PRESSED, on_logo_pressed)
+
+Hover = 0
+power = 0
+radio.set_group(1)
+servo = 3
+power = 0
+Hover = 0
+
+def on_forever():
+    if power == 1:
+        robotbit.motor_run(robotbit.Motors.M2A, 160)
+    else:
+        robotbit.motor_run(robotbit.Motors.M2A, 0)
+    if Hover == 1:
+        robotbit.motor_run(robotbit.Motors.M1A, 255)
+    else:
+        robotbit.motor_run(robotbit.Motors.M1A, 0)
+basic.forever(on_forever)
+
+def on_forever2():
+    global servo
+    basic.show_number(servo)
+    if servo <= 1:
+        servo = 1
+    if servo >= 5:
+        servo = 5
+    if servo == 1:
+        robotbit.servo(robotbit.Servos.S1, 0)
+    if servo == 2:
+        robotbit.servo(robotbit.Servos.S1, 45)
+    if servo == 3:
+        robotbit.servo(robotbit.Servos.S1, 90)
+    if servo == 4:
+        robotbit.servo(robotbit.Servos.S1, 125)
+    if servo == 5:
+        robotbit.servo(robotbit.Servos.S1, 180)
+basic.forever(on_forever2)
